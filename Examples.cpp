@@ -15,25 +15,27 @@ using namespace std;
 
 using namespace twilio;
 
-int main () {
+int main ()
+{
 
   // Twilio REST API version
   const string API_VERSION = "2010-04-01";
-  
+
   // Twilio AccountSid and AuthToken
   const string ACCOUNT_SID = "SID";
   const string ACCOUNT_TOKEN = "TOKEN";
-  
+
   // Outgoing Caller ID previously validated with Twilio
   const string CALLER_ID = "NNNNNNNNNN";
 
   string response;
 
   vector<Var> vars;
-  
-  try {
-   
-    // Twilio REST 
+
+  try
+  {
+
+    // Twilio REST
     Rest t (ACCOUNT_SID, ACCOUNT_TOKEN);
 
     // get completed calls XML
@@ -81,13 +83,14 @@ int main () {
     // Twilio Utils
     Utils u (ACCOUNT_SID, ACCOUNT_TOKEN);
 
-    // validate request signature 
+    // validate request signature
     vars.clear();
     vars.push_back(Var("Status", "Completed"));
     bool v = u.validateRequest("x1P+eKchQZzgVQO3Yad/PgKSM1k=", "/" + API_VERSION + "/Accounts/" + ACCOUNT_SID + "/Calls", vars);
     cout << "request valid:" << v << endl;
   }
-  catch(char const* str) {
+  catch (char const* str)
+  {
     cout << "Exception raised: " << str << endl;
   }
 

@@ -36,36 +36,39 @@ string Rest::request(const string& path, const string& method, const vector<Var>
   string response, m;
 
   if (path.length() <= 0)
+  {
     throw "Path is empty";
+  }
 
   m = method;
 
   transform(m.begin(), m.end(), m.begin(), ::toupper);
 
   if ((m != "GET" && m != "POST"
-        && m != "PUT" && m != "DELETE"))
+       && m != "PUT" && m != "DELETE"))
   {
     throw "Invalid m parameter";
   }
-    
+
   string url = build_uri(path);
-  if(m == "GET")
+
+  if (m == "GET")
   {
     response = get(url, vars);
   }
-  else if(m == "POST")
+  else if (m == "POST")
   {
     response = post(url, vars);
   }
-  else if(m == "PUT")
+  else if (m == "PUT")
   {
     response = put(url, vars[0].value);
   }
-  else if(m == "DELETE")
+  else if (m == "DELETE")
   {
     response = tdelete(url);
   }
-  
+
   return response;
 }
 
@@ -76,30 +79,32 @@ string Rest::request(const string& path, const string& method, const vector<Var>
  * @param nmemb data size is size * nmemb
  * @param buffer
  */
-static int writer(char *data, size_t size, size_t nmemb, string *buffer)
+static int writer(char* data, size_t size, size_t nmemb, string* buffer)
 {
   int result = 0;
+
   if (buffer != NULL)
   {
     buffer->append(data, size * nmemb);
     result = size * nmemb;
   }
+
   return result;
 }
 
 /**
  * Curl read callback function
- * @param ptr pointer to storage 
+ * @param ptr pointer to storage
  * @param size data size is size * nmemb
  * @param nmemb data size is size * nmemb
  * @param userdata read from stream
  */
-static size_t read_callback(void *ptr, size_t size, size_t nmemb, void *stream)
+static size_t read_callback(void* ptr, size_t size, size_t nmemb, void* stream)
 {
   size_t retcode;
-     
+
   retcode = fread((FILE*)ptr, size, nmemb, (FILE*)stream);
-         
+
   return retcode;
 }
 
@@ -113,21 +118,25 @@ string Rest::get(const string& url, const vector<Var>& vars)
 {
   string query = "";
   string u;
-  
-  for(unsigned int i = 0; i < vars.size(); i++)
+
+  for (unsigned int i = 0; i < vars.size(); i++)
   {
     query += "&" + vars[i].key + "=" + vars[i].value;
   }
-    
-  if (query.length() > 0)
-    u = url + "?" + query.substr(1);
 
-  CURL *curl;
+  if (query.length() > 0)
+  {
+    u = url + "?" + query.substr(1);
+  }
+
+  CURL* curl;
   CURLcode res;
-     
+
   tbuffer = "HTTP get error";
   curl = curl_easy_init();
-  if(curl) {
+
+  if (curl)
+  {
     //url = curl_easy_escape(curl, url.c_str(), url.length());
     string sAuth = tid + ":" + ttoken;
     curl_easy_setopt(curl, CURLOPT_URL, u.c_str());
@@ -138,10 +147,13 @@ string Rest::get(const string& url, const vector<Var>& vars)
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &tbuffer);
     res = curl_easy_perform(curl);
     curl_easy_cleanup(curl);
+
     if (res == CURLE_OK)
+    {
       return tbuffer;
+    }
   }
-  
+
   return tbuffer;
 }
 
@@ -153,18 +165,18 @@ string Rest::get(const string& url, const vector<Var>& vars)
 */
 string Rest::post(const string& url, const vector<Var>& vars)
 {
-  CURL *curl;
+  CURL* curl;
   CURLcode res;
-    
-  struct curl_httppost *formpost = NULL;
-  struct curl_httppost *lastptr = NULL;
-  struct curl_slist *headerlist = NULL;
+
+  struct curl_httppost* formpost = NULL;
+  struct curl_httppost* lastptr = NULL;
+  struct curl_slist* headerlist = NULL;
   static const char buf[] = "Expect:";
 
   curl_global_init(CURL_GLOBAL_ALL);
 
   // Post data
-  for(unsigned int i = 0; i < vars.size(); i++)
+  for (unsigned int i = 0; i < vars.size(); i++)
   {
     curl_formadd(&formpost,
                  &lastptr,
@@ -177,7 +189,8 @@ string Rest::post(const string& url, const vector<Var>& vars)
   curl = curl_easy_init();
   headerlist = curl_slist_append(headerlist, buf);
 
-  if(curl) {
+  if (curl)
+  {
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     string sAuth = tid + ":" + ttoken;
     curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
@@ -192,10 +205,13 @@ string Rest::post(const string& url, const vector<Var>& vars)
     curl_formfree(formpost);
     curl_slist_free_all (headerlist);
     curl_global_cleanup();
+
     if (res == CURLE_OK)
+    {
       return tbuffer;
+    }
   }
-  
+
   return tbuffer;
 }
 
@@ -207,13 +223,13 @@ string Rest::post(const string& url, const vector<Var>& vars)
 */
 string Rest::put(const string& url, const string& filename)
 {
-  CURL *curl;
+  CURL* curl;
   CURLcode res;
-  FILE * hd_src ;
+  FILE* hd_src ;
   int hd ;
   struct stat file_info;
-  
-  // get local file size 
+
+  // get local file size
   hd = open(filename.c_str(), O_RDONLY);
   fstat(hd, &file_info);
   close(hd);
@@ -224,7 +240,8 @@ string Rest::put(const string& url, const string& filename)
   tbuffer = "HTTP put error";
   curl = curl_easy_init();
 
-  if(curl) {
+  if (curl)
+  {
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     string sAuth = tid + ":" + ttoken;
     curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
@@ -232,20 +249,22 @@ string Rest::put(const string& url, const string& filename)
     curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
     curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
     curl_easy_setopt(curl, CURLOPT_READDATA, hd_src);
-    curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE, 
-                      (curl_off_t)file_info.st_size);
+    curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE,
+                     (curl_off_t)file_info.st_size);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writer);
     tbuffer = "";
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &tbuffer);
     res = curl_easy_perform(curl);
     curl_easy_cleanup(curl);
     curl_global_cleanup();
-    if (res == CURLE_OK) {
+
+    if (res == CURLE_OK)
+    {
       fclose(hd_src);
       return tbuffer;
     }
   }
-  
+
   fclose(hd_src);
   return tbuffer;
 }
@@ -257,12 +276,14 @@ string Rest::put(const string& url, const string& filename)
 */
 string Rest::tdelete(const string& url)
 {
-  CURL *curl;
+  CURL* curl;
   CURLcode res;
-    
+
   tbuffer = "HTTP delete error";
   curl = curl_easy_init();
-  if(curl) {
+
+  if (curl)
+  {
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
     string sAuth = tid + ":" + ttoken;
@@ -273,10 +294,13 @@ string Rest::tdelete(const string& url)
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &tbuffer);
     res = curl_easy_perform(curl);
     curl_easy_cleanup(curl);
+
     if (res == CURLE_OK)
+    {
       return tbuffer;
+    }
   }
-  
+
   return tbuffer;
 }
 
@@ -288,11 +312,15 @@ string Rest::tdelete(const string& url)
 string Rest::build_uri(const string& path) const
 {
   if (path[0] == '/')
+  {
     return TWILIO_API_URL + path;
+  }
   else
+  {
     return TWILIO_API_URL + "/" + path;
+  }
 }
- 
+
 const string Rest::TWILIO_API_URL = "https://api.twilio.com";
 
 

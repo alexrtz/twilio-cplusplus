@@ -26,7 +26,8 @@ Verb& Verb::append(Verb& verb)
 {
   vector<string>::iterator result;
   result = find(allowedVerbs.begin(), allowedVerbs.end(), verb.getTag());
-  if(result == allowedVerbs.end())
+
+  if (result == allowedVerbs.end())
   {
     throw "This is not a supported verb";
   }
@@ -80,20 +81,24 @@ vector<Var>& Verb::getAttributes()
 string Verb::toXML()
 {
   string xml = "<" + ttag;
+
   for (unsigned int i = 0; i < attributes.size(); i++)
   {
     xml += " " + attributes[i].key + "=\"" + attributes[i].value + "\"";
   }
-  
+
   xml += ">";
-  
-  if(tbody.length() > 0)
+
+  if (tbody.length() > 0)
+  {
     xml += "<![CDATA[" + replaceAll(tbody, "]]>", "]]>]]><![CDATA[") + "]]>";
+  }
+
   for (unsigned int i = 0; i < children.size(); i++)
   {
     xml += children[i].toXML();
   }
-  
+
   return xml += "</" + ttag + ">";
 }
 
@@ -104,9 +109,9 @@ string Verb::toXML()
 */
 void Verb::set(const string& key, const string& value)
 {
-  for(unsigned int i = 0; i < attributes.size(); i++)
+  for (unsigned int i = 0; i < attributes.size(); i++)
   {
-    if(attributes[i].key == key)
+    if (attributes[i].key == key)
     {
       attributes[i].value = value;
       return;
@@ -149,10 +154,14 @@ void Say::setVoice(const string& str)
 */
 void Conference::setBoolean(const string& attr, bool b)
 {
-  if(b)
+  if (b)
+  {
     set(attr, "true");
+  }
   else
+  {
     set(attr, "false");
+  }
 }
 
 /**
@@ -208,9 +217,9 @@ void Conference::setWaitUrl(const string& s)
 {
   set("waitUrl", s);
 }
-    
+
 /**
-  * Set action attribute 
+  * Set action attribute
   * @param s action attribute value
 */
 void Dial::setAction(const string& s)
@@ -260,14 +269,18 @@ void Dial::setTimeLimit(int i)
 */
 void Dial::setHangupOnStar(bool b)
 {
-  if(b)
+  if (b)
+  {
     set("hangupOnStar", "true");
+  }
   else
+  {
     set("hangupOnStar", "false");
+  }
 }
 
 /**
-  * Set action attribute 
+  * Set action attribute
   * @param s action attribute value
 */
 void Gather::setAction(const string& s)
@@ -348,7 +361,7 @@ void Play::setLoop(int i)
 }
 
 /**
-  * Set action attribute 
+  * Set action attribute
   * @param s action attribute value
 */
 void Record::setAction(const string& s)
@@ -407,10 +420,14 @@ void Record::setTranscribeCallback(const string& s)
 */
 void Record::setTranscribe(bool b)
 {
-  if(b)
+  if (b)
+  {
     set("transcribe", "true");
+  }
   else
+  {
     set("transcribe", "false");
+  }
 }
 
 /**
@@ -432,7 +449,7 @@ void Reject::setReason(const string& s)
 }
 
 /**
-  * Set action attribute 
+  * Set action attribute
   * @param s action attribute value
 */
 void Sms::setAction(const string& s)

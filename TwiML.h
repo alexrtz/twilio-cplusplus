@@ -6,496 +6,516 @@
 #ifndef TWILIOTWIML_H
 #define TWILIOTWIML_H
 
-namespace twilio {
+#include <Utils.h>
 
-  class Verb {
-    public:
-      /**
-       * Constructor
-       * @param tag TwiML tag
-       * @param body TwiML tag body
-       */
-      Verb(const string& tag, const string& body)
-      {
-         ttag = tag;
-         tbody = body;
-      }
+#include <string>
+#include <vector>
 
-      static const string V_SAY;
-      static const string V_PLAY;
-      static const string V_GATHER;
-      static const string V_RECORD;
-      static const string V_PAUSE;
-      static const string V_HANGUP;
-      static const string V_DIAL;
-      static const string V_NUMBER;
-      static const string V_REDIRECT;
-      static const string V_RESPONSE;
-      static const string V_CONFERENCE;
-      static const string V_SMS;
-      static const string V_REJECT;
+namespace twilio
+{
 
-      /**
-       * Append a children verb
-       * @param verb Twilio verb
-       * @return verb
-       */
-      Verb& append(Verb& verb);
-      
-      /**
-        * Get verb body
-        * @return verb body
-      */
-      string& getBody();
+class Verb
+{
+public:
+  /**
+   * Constructor
+   * @param tag TwiML tag
+   * @param body TwiML tag body
+   */
+  Verb(const std::string& tag, const std::string& body)
+  {
+    ttag = tag;
+    tbody = body;
+  }
 
-      /**
-        * Get verb tag
-        * @return verb tag
-      */
-      string& getTag();
-      
-      /**
-        * Get verb children
-        * @return vector of verbs
-      */
-      vector<Verb>& getChildren();
+  static const std::string V_SAY;
+  static const std::string V_PLAY;
+  static const std::string V_GATHER;
+  static const std::string V_RECORD;
+  static const std::string V_PAUSE;
+  static const std::string V_HANGUP;
+  static const std::string V_DIAL;
+  static const std::string V_NUMBER;
+  static const std::string V_REDIRECT;
+  static const std::string V_RESPONSE;
+  static const std::string V_CONFERENCE;
+  static const std::string V_SMS;
+  static const std::string V_REJECT;
 
-      /**
-        * Get verb attributes
-        * @return vector of attributes
-      */
-      vector<Var>& getAttributes();
-      
-      /**
-        * Return verb xml based on tag, body, attributes and its children
-        * @return verb xml
-      */
-      string toXML();
+  /**
+   * Append a children verb
+   * @param verb Twilio verb
+   * @return verb
+   */
+  Verb& append(Verb& verb);
 
-      /**
-       * Set attribute value. Add attribute if doesn't exist
-       * @param key attribute key
-       * @param value attribute value
-      */
-      void set(const string& key, const string& value);
+  /**
+    * Get verb body
+    * @return verb body
+  */
+  std::string& getBody();
 
-    protected:
-      /** tag */
-      string ttag;
-      /** tag body */
-      string tbody;
-      /** attributes */
-      vector<Var> attributes;
-      /** children */
-      vector<Verb> children;
-      /** allowed verbs */
-      vector<string> allowedVerbs;
+  /**
+    * Get verb tag
+    * @return verb tag
+  */
+  std::string& getTag();
 
-  };
+  /**
+    * Get verb children
+    * @return std::vector of verbs
+  */
+  std::vector<Verb>& getChildren();
 
-  class Say: public Verb {
-    public:
-      /**
-       * Constructor
-       * @param body tag body
-       */
-      Say(const string& body) : Verb(V_SAY, body) {};
-      
-      /**
-       * Set loop attribute
-       * @param i loop count
-      */
-      void setLoop(int i);
-      
-      /**
-       * Set language attribute
-       * @param str language
-      */
-      void setLanguage(const string& str);
+  /**
+    * Get verb attributes
+    * @return std::vector of attributes
+  */
+  std::vector<Var>& getAttributes();
 
-      /**
-       * Set voice attribute
-       * @param str language
-      */
-      void setVoice(const string& str);
+  /**
+    * Return verb xml based on tag, body, attributes and its children
+    * @return verb xml
+  */
+  std::string toXML();
 
-  };
+  /**
+   * Set attribute value. Add attribute if doesn't exist
+   * @param key attribute key
+   * @param value attribute value
+  */
+  void set(const std::string& key, const std::string& value);
 
-  class Conference: public Verb {
-    public:
-      /**
-       * Constructor
-       * @param body tag body
-       */
-      Conference(const string& body) : Verb(V_CONFERENCE, body) {};
-    
-      /**
-       * Set muted attribute
-       * @param b muted attribute value
-      */
-      void setMuted(bool b);
+protected:
+  /** tag */
+  std::string ttag;
+  /** tag body */
+  std::string tbody;
+  /** attributes */
+  std::vector<Var> attributes;
+  /** children */
+  std::vector<Verb> children;
+  /** allowed verbs */
+  std::vector<std::string> allowedVerbs;
 
-      /**
-       * Set beep attribute
-       * @param b beep atttribute value
-      */
-      void setBeep(bool b);
+};
 
-      /**
-       * Set startConferenceOnEnter attribute
-       * @param b startConferenceOnEnter attribute value
-      */
-      void setStartConferenceOnEnter(bool b);
+class Say: public Verb
+{
+public:
+  /**
+   * Constructor
+   * @param body tag body
+   */
+  Say(const std::string& body) : Verb(V_SAY, body) {};
 
-      /**
-       * Set endConferenceOnExit attribute
-       * @param b endConferenceOnExit attribute value
-      */
-      void setEndConferenceOnExit(bool b);
+  /**
+   * Set loop attribute
+   * @param i loop count
+  */
+  void setLoop(int i);
 
-      /**
-       * Set waitMethod
-       * @param s waitMethod attribute value
-      */
-      void setWaitMethod(const string& s);
+  /**
+   * Set language attribute
+   * @param str language
+  */
+  void setLanguage(const std::string& str);
 
-      /**
-       * Set waitUrl
-       * @param s waitUrl attribute value
-      */
-      void setWaitUrl(const string& s);
+  /**
+   * Set voice attribute
+   * @param str language
+  */
+  void setVoice(const std::string& str);
 
-    private:
-      /**
-       * Set boolean attribute
-       * @param attr attribute name
-       * @param b boolean value
-      */
-      void setBoolean(const string& attr, bool b);
-  };
+};
 
-  class Dial: public Verb {
-    public:
-      /**
-       * Constructor
-       */
-      Dial() : Verb(V_DIAL, "")
-      {
-        allowedVerbs.push_back(V_NUMBER);
-        allowedVerbs.push_back(V_CONFERENCE);
-      }
-   
-      /**
-       * Constructor
-       * @param number dial number
-       */
-      Dial(const string& number) : Verb(V_DIAL, number)
-      {
-        allowedVerbs.push_back(V_NUMBER);
-        allowedVerbs.push_back(V_CONFERENCE);
-      }
-   
-      /**
-       * Set action attribute 
-       * @param s action attribute value
-      */
-      void setAction(const string& s);
+class Conference: public Verb
+{
+public:
+  /**
+   * Constructor
+   * @param body tag body
+   */
+  Conference(const std::string& body) : Verb(V_CONFERENCE, body) {};
 
-      /**
-        * Set method attribute
-        * @param s attribute value
-      */
-      void setMethod(const string& s);
+  /**
+   * Set muted attribute
+   * @param b muted attribute value
+  */
+  void setMuted(bool b);
 
-      /**
-        * Set caller id attribute
-        * @param s attribute value
-      */
-      void setCallerId(const string& s);
+  /**
+   * Set beep attribute
+   * @param b beep atttribute value
+  */
+  void setBeep(bool b);
 
-      /**
-       * Set timeout attribute
-       * @param i value
-      */
-      void setTimeout(int i);
+  /**
+   * Set startConferenceOnEnter attribute
+   * @param b startConferenceOnEnter attribute value
+  */
+  void setStartConferenceOnEnter(bool b);
 
-      /**
-       * Set timeLimit attribute
-       * @param i value
-      */
-      void setTimeLimit(int i);
+  /**
+   * Set endConferenceOnExit attribute
+   * @param b endConferenceOnExit attribute value
+  */
+  void setEndConferenceOnExit(bool b);
 
-      /**
-       * Set hangupOnStar attribute
-       * @param i value
-      */
-      void setHangupOnStar(bool b);
+  /**
+   * Set waitMethod
+   * @param s waitMethod attribute value
+  */
+  void setWaitMethod(const std::string& s);
 
-  };
+  /**
+   * Set waitUrl
+   * @param s waitUrl attribute value
+  */
+  void setWaitUrl(const std::string& s);
 
-  class Gather: public Verb {
-    public:
-      /**
-       * Constructor
-       */
-      Gather() : Verb(V_GATHER, "")
-      {
-        allowedVerbs.push_back(V_SAY);
-        allowedVerbs.push_back(V_PLAY);
-        allowedVerbs.push_back(V_PAUSE);
-      }
+private:
+  /**
+   * Set boolean attribute
+   * @param attr attribute name
+   * @param b boolean value
+  */
+  void setBoolean(const std::string& attr, bool b);
+};
 
-      /**
-        * Set action attribute 
-        * @param s action attribute value
-      */
-      void setAction(const string& s);
+class Dial: public Verb
+{
+public:
+  /**
+   * Constructor
+   */
+  Dial() : Verb(V_DIAL, "")
+  {
+    allowedVerbs.push_back(V_NUMBER);
+    allowedVerbs.push_back(V_CONFERENCE);
+  }
 
-      /**
-        * Set method attribute
-        * @param s attribute value
-      */
-      void setMethod(const string& s);
+  /**
+   * Constructor
+   * @param number dial number
+   */
+  Dial(const std::string& number) : Verb(V_DIAL, number)
+  {
+    allowedVerbs.push_back(V_NUMBER);
+    allowedVerbs.push_back(V_CONFERENCE);
+  }
 
-      /**
-       * Set timeout attribute
-       * @param i value
-      */
-      void setTimeout(int i);
+  /**
+   * Set action attribute
+   * @param s action attribute value
+  */
+  void setAction(const std::string& s);
 
-      /**
-       * Set numDigits attribute
-       * @param i value
-      */
-      void setNumDigits(int i);
+  /**
+    * Set method attribute
+    * @param s attribute value
+  */
+  void setMethod(const std::string& s);
 
-      /**
-        * Set finishOnKey attribute
-        * @param s attribute value
-      */
-      void setFinishOnKey(const string& s);
+  /**
+    * Set caller id attribute
+    * @param s attribute value
+  */
+  void setCallerId(const std::string& s);
 
-  };
+  /**
+   * Set timeout attribute
+   * @param i value
+  */
+  void setTimeout(int i);
 
-  class Hangup: public Verb {
-    public:
-      /**
-       * Constructor
-       */
-      Hangup() : Verb(V_GATHER, "")
-      {
-      }
-  };
+  /**
+   * Set timeLimit attribute
+   * @param i value
+  */
+  void setTimeLimit(int i);
 
-  class Number: public Verb {
-    public:
-      /**
-       * Constructor
-       * @param number
-       */
-      Number(const string& number) : Verb(V_NUMBER, number)
-      {
-      }
-      
-      /**
-       * Set sendDigits attribute
-       * @param s attribute value
-      */
-      void setSendDigits(const string& s);
+  /**
+   * Set hangupOnStar attribute
+   * @param i value
+  */
+  void setHangupOnStar(bool b);
 
-      /**
-       * Set url attribute
-       * @param s attribute value
-      */
-      void setUrl(const string& s);
-  };
+};
 
-  class Pause: public Verb {
-    public:
-      /**
-       * Constructor
-       */
-      Pause() : Verb(V_PAUSE, "")
-      {
-      }
-      
-      /**
-       * Set lenght attribute
-       * @param i value
-      */
-      void setLength(int i);
-  };
+class Gather: public Verb
+{
+public:
+  /**
+   * Constructor
+   */
+  Gather() : Verb(V_GATHER, "")
+  {
+    allowedVerbs.push_back(V_SAY);
+    allowedVerbs.push_back(V_PLAY);
+    allowedVerbs.push_back(V_PAUSE);
+  }
 
-  class Play: public Verb {
-    public:
-      /**
-       * Constructor
-       */
-      Play(const string& body) : Verb(V_PLAY, body)
-      {
-      }
-      
-      /**
-       * Set loop attribute
-       * @param i value
-      */
-      void setLoop(int i);
-  };
+  /**
+    * Set action attribute
+    * @param s action attribute value
+  */
+  void setAction(const std::string& s);
 
-  class Record: public Verb {
-    public:
-      /**
-       * Constructor
-       */
-      Record() : Verb(V_RECORD, "")
-      {
-      }
-     
-      /**
-       * Set action attribute 
-       * @param s action attribute value
-      */
-      void setAction(const string& s);
+  /**
+    * Set method attribute
+    * @param s attribute value
+  */
+  void setMethod(const std::string& s);
 
-      /**
-        * Set method attribute
-        * @param s attribute value
-      */
-      void setMethod(const string& s);
+  /**
+   * Set timeout attribute
+   * @param i value
+  */
+  void setTimeout(int i);
 
-      /**
-       * Set timeout attribute
-       * @param i value
-      */
-      void setTimeout(int i);
+  /**
+   * Set numDigits attribute
+   * @param i value
+  */
+  void setNumDigits(int i);
 
-      /**
-        * Set finishOnKey attribute
-        * @param s attribute value
-      */
-      void setFinishOnKey(const string& s);
+  /**
+    * Set finishOnKey attribute
+    * @param s attribute value
+  */
+  void setFinishOnKey(const std::string& s);
 
-      /**
-       * Set maxLength attribute
-       * @param i value
-      */
-      void setMaxLength(int i);
+};
 
-      /**
-        * Set transcribeCallback attribute
-        * @param s attribute value
-      */
-      void setTranscribeCallback(const string& s);
+class Hangup: public Verb
+{
+public:
+  /**
+   * Constructor
+   */
+  Hangup() : Verb(V_GATHER, "")
+  {
+  }
+};
 
-      /**
-       * Set transcribe attribute
-       * @param b value
-      */
-      void setTranscribe(bool b);
-   
-  };
+class Number: public Verb
+{
+public:
+  /**
+   * Constructor
+   * @param number
+   */
+  Number(const std::string& number) : Verb(V_NUMBER, number)
+  {
+  }
 
-  class Redirect: public Verb {
-    public:
-      /**
-       * Constructor
-       */
-      Redirect() : Verb(V_REDIRECT, "")
-      {
-      }
-   
-      /**
-       * Constructor
-       * @param number redirect number
-       */
-      Redirect(const string& number) : Verb(V_REDIRECT, number)
-      {
-      }
-   
-      /**
-        * Set method attribute
-        * @param s attribute value
-      */
-      void setMethod(const string& s);
-  };
+  /**
+   * Set sendDigits attribute
+   * @param s attribute value
+  */
+  void setSendDigits(const std::string& s);
 
-  class Reject: public Verb {
-    public:
-      /**
-       * Constructor
-       */
-      Reject() : Verb(V_REJECT, "")
-      {
-      }
-   
-      /**
-        * Set reason attribute
-        * @param s attribute value
-      */
-      void setReason(const string& s);
-  };
+  /**
+   * Set url attribute
+   * @param s attribute value
+  */
+  void setUrl(const std::string& s);
+};
 
-  class Sms: public Verb {
-    public:
-      /**
-       * Constructor
-       * @param message sms message
-       */
-      Sms(const string& message) : Verb(V_SMS, message)
-      {
-      }
-   
-      /**
-       * Set action attribute 
-       * @param s action attribute value
-      */
-      void setAction(const string& s);
+class Pause: public Verb
+{
+public:
+  /**
+   * Constructor
+   */
+  Pause() : Verb(V_PAUSE, "")
+  {
+  }
 
-      /**
-        * Set method attribute
-        * @param s attribute value
-      */
-      void setMethod(const string& s);
+  /**
+   * Set lenght attribute
+   * @param i value
+  */
+  void setLength(int i);
+};
 
-      /**
-        * Set to attribute
-        * @param s attribute value
-      */
-      void setTo(const string& s);
+class Play: public Verb
+{
+public:
+  /**
+   * Constructor
+   */
+  Play(const std::string& body) : Verb(V_PLAY, body)
+  {
+  }
 
-      /**
-        * Set from attribute
-        * @param s attribute value
-      */
-      void setFrom(const string& s);
+  /**
+   * Set loop attribute
+   * @param i value
+  */
+  void setLoop(int i);
+};
 
-      /**
-        * Set statusCallback attribute
-        * @param s attribute value
-      */
-      void setStatusCallback(const string& s);
+class Record: public Verb
+{
+public:
+  /**
+   * Constructor
+   */
+  Record() : Verb(V_RECORD, "")
+  {
+  }
 
-  };
+  /**
+   * Set action attribute
+   * @param s action attribute value
+  */
+  void setAction(const std::string& s);
 
-  class TwiMLResponse: public Verb {
-    public:
-      /**
-       * Constructor
-       */
-      TwiMLResponse() : Verb(V_RESPONSE, "")
-      {
-        allowedVerbs.push_back(V_GATHER);
-        allowedVerbs.push_back(V_RECORD);
-        allowedVerbs.push_back(V_DIAL);
-        allowedVerbs.push_back(V_SAY);
-        allowedVerbs.push_back(V_PLAY);
-        allowedVerbs.push_back(V_REDIRECT);
-        allowedVerbs.push_back(V_REJECT);
-        allowedVerbs.push_back(V_HANGUP);
-        allowedVerbs.push_back(V_PAUSE);
-        allowedVerbs.push_back(V_SMS);
-      }
-  };
+  /**
+    * Set method attribute
+    * @param s attribute value
+  */
+  void setMethod(const std::string& s);
+
+  /**
+   * Set timeout attribute
+   * @param i value
+  */
+  void setTimeout(int i);
+
+  /**
+    * Set finishOnKey attribute
+    * @param s attribute value
+  */
+  void setFinishOnKey(const std::string& s);
+
+  /**
+   * Set maxLength attribute
+   * @param i value
+  */
+  void setMaxLength(int i);
+
+  /**
+    * Set transcribeCallback attribute
+    * @param s attribute value
+  */
+  void setTranscribeCallback(const std::string& s);
+
+  /**
+   * Set transcribe attribute
+   * @param b value
+  */
+  void setTranscribe(bool b);
+
+};
+
+class Redirect: public Verb
+{
+public:
+  /**
+   * Constructor
+   */
+  Redirect() : Verb(V_REDIRECT, "")
+  {
+  }
+
+  /**
+   * Constructor
+   * @param number redirect number
+   */
+  Redirect(const std::string& number) : Verb(V_REDIRECT, number)
+  {
+  }
+
+  /**
+    * Set method attribute
+    * @param s attribute value
+  */
+  void setMethod(const std::string& s);
+};
+
+class Reject: public Verb
+{
+public:
+  /**
+   * Constructor
+   */
+  Reject() : Verb(V_REJECT, "")
+  {
+  }
+
+  /**
+    * Set reason attribute
+    * @param s attribute value
+  */
+  void setReason(const std::string& s);
+};
+
+class Sms: public Verb
+{
+public:
+  /**
+   * Constructor
+   * @param message sms message
+   */
+  Sms(const std::string& message) : Verb(V_SMS, message)
+  {
+  }
+
+  /**
+   * Set action attribute
+   * @param s action attribute value
+  */
+  void setAction(const std::string& s);
+
+  /**
+    * Set method attribute
+    * @param s attribute value
+  */
+  void setMethod(const std::string& s);
+
+  /**
+    * Set to attribute
+    * @param s attribute value
+  */
+  void setTo(const std::string& s);
+
+  /**
+    * Set from attribute
+    * @param s attribute value
+  */
+  void setFrom(const std::string& s);
+
+  /**
+    * Set statusCallback attribute
+    * @param s attribute value
+  */
+  void setStatusCallback(const std::string& s);
+
+};
+
+class TwiMLResponse: public Verb
+{
+public:
+  /**
+   * Constructor
+   */
+  TwiMLResponse() : Verb(V_RESPONSE, "")
+  {
+    allowedVerbs.push_back(V_GATHER);
+    allowedVerbs.push_back(V_RECORD);
+    allowedVerbs.push_back(V_DIAL);
+    allowedVerbs.push_back(V_SAY);
+    allowedVerbs.push_back(V_PLAY);
+    allowedVerbs.push_back(V_REDIRECT);
+    allowedVerbs.push_back(V_REJECT);
+    allowedVerbs.push_back(V_HANGUP);
+    allowedVerbs.push_back(V_PAUSE);
+    allowedVerbs.push_back(V_SMS);
+  }
+};
 }
 
 #endif
